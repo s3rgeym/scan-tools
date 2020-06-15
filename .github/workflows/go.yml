@@ -32,6 +32,9 @@ jobs:
 
     - name: Build addscheme
       run: go build -v ./cmd/addscheme
+    - name: Go Release Binary
+      uses: ngs/go-release.action@v1.0.2
+
 
 #     - name: Test
 #       run: go test -v .
