@@ -18,16 +18,16 @@ var schemes = map[string]string{
 }
 
 type cmdFlags struct {
-	In          string
-	Out         string
+	Input       string
+	Output      string
 	Concurrency int
 	Timeout     int
 	ShowHelp    bool
 }
 
 func setupFlags(flags *cmdFlags) {
-	flag.StringVar(&flags.In, "i", "-", "Input filename")
-	flag.StringVar(&flags.Out, "o", "-", "Output filename")
+	flag.StringVar(&flags.Input, "i", "-", "Input filename")
+	flag.StringVar(&flags.Output, "o", "-", "Output filename")
 	flag.IntVar(&flags.Concurrency, "c", 10, "Concurrent requests")
 	flag.IntVar(&flags.Timeout, "t", 3, "Connect timeout in seconds")
 	flag.BoolVar(&flags.ShowHelp, "h", false, "Show help and exit")
@@ -47,8 +47,8 @@ func main() {
 		os.Exit(1)
 	}
 	in := os.Stdin
-	if flags.In != "-" {
-		path, err := utils.ExpandPath(flags.In)
+	if flags.Input != "-" {
+		path, err := utils.ExpandPath(flags.Input)
 		if err != nil {
 			log.Panic(err)
 		}
@@ -60,8 +60,8 @@ func main() {
 		in = file
 	}
 	out := os.Stdout
-	if flags.Out != "-" {
-		path, err := utils.ExpandPath(flags.Out)
+	if flags.Output != "-" {
+		path, err := utils.ExpandPath(flags.Output)
 		if err != nil {
 			log.Panic(err)
 		}
@@ -82,7 +82,10 @@ func main() {
 	jobs := make(chan string, numberOfWorkers)
 	go func() {
 		for _, host := range hosts {
-			jobs <- host
+			// skip empty lines
+			if host != "" {
+				jobs <- host
+			}
 		}
 		close(jobs)
 	}()
@@ -101,7 +104,6 @@ func main() {
 	for result := range results {
 		fmt.Fprintln(out, result)
 	}
-	// Finish
 }
 
 func worker(
