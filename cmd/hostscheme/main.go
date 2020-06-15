@@ -29,7 +29,7 @@ func setupFlags(flags *cmdFlags) {
 	flag.StringVar(&flags.In, "i", "-", "Input filename")
 	flag.StringVar(&flags.Out, "o", "-", "Output filename")
 	flag.IntVar(&flags.Concurrency, "c", 10, "Concurrent requests")
-	flag.IntVar(&flags.Timeout, "t", 300, "Connect timeout in milliseconds")
+	flag.IntVar(&flags.Timeout, "t", 3, "Connect timeout in seconds")
 	flag.BoolVar(&flags.ShowHelp, "h", false, "Show help and exit")
 }
 
@@ -64,7 +64,7 @@ func main() {
 		if err != nil {
 			log.Panic(err)
 		}
-		file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Panic(err)
 		}
@@ -84,20 +84,27 @@ func main() {
 		}
 		close(jobs)
 	}()
+	results := make(chan string)
+	connectTimeout := time.Duration(flags.Timeout) * time.Second
 	var wg sync.WaitGroup
 	wg.Add(hostsLen)
-	connectTimeout := time.Duration(flags.Timeout) * time.Millisecond
 	for i := 0; i < numberOfWorkers; i++ {
-		go worker(jobs, &wg, out, connectTimeout)
+		go worker(jobs, results, connectTimeout, &wg)
 	}
+	go func() {
+		for result := range results {
+			fmt.Fprintln(out, result)
+		}
+	}()
 	wg.Wait()
+	close(results)
 }
 
 func worker(
 	jobs <-chan string,
-	wg *sync.WaitGroup,
-	out *os.File,
+	results chan<- string,
 	connectTimeout time.Duration,
+	wg *sync.WaitGroup,
 ) {
 	for host := range jobs {
 		for scheme, port := range schemes {
@@ -109,7 +116,7 @@ func worker(
 			if conn != nil {
 				conn.Close()
 				hostname := fmt.Sprintf("%s://%s", scheme, host)
-				fmt.Fprintln(out, hostname)
+				results <- hostname
 				break
 			}
 		}
