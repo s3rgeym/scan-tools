@@ -2,7 +2,7 @@
 
 ```zsh
 $ go run cmd/<binary>
-$ go build cmd/<binary>
+$ make build
 ```
 
 ## addscheme

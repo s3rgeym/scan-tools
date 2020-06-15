@@ -37,7 +37,6 @@ func main() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage %s [options...]\n\n", os.Args[0])
 		flag.PrintDefaults()
-		fmt.Fprintln(os.Stderr)
 	}
 	flags := cmdFlags{}
 	setupFlags(&flags)
