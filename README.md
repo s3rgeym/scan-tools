@@ -1,4 +1,4 @@
-# Утилиты для работы с HTTP
+# Scan Tools
 
 ```zsh
 $ go run cmd/<binary>
