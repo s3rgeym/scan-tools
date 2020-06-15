@@ -100,7 +100,7 @@ func main() {
 	for result := range results {
 		fmt.Fprintln(out, result)
 	}
-	fmt.Fprintln(out, "Finish")
+	// Finish
 }
 
 func worker(
