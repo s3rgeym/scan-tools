@@ -31,7 +31,7 @@ jobs:
         fi
 
     - name: Build addscheme
-      run: go build ./cmd/addscheme -v
+      run: go build -v ./cmd/addscheme
 
 #     - name: Test
 #       run: go test -v .
