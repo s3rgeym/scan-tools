@@ -4,7 +4,7 @@
 
 ## Download Binaries
 
-[Direct Link](https://github.com/tz4678/scan-tools/releases/latest/scan-tools.zip)
+Download `release.zip` from [latest release](https://github.com/tz4678/scan-tools/releases/latest).
 
 ## Installation
 
