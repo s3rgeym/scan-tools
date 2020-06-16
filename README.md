@@ -1,7 +1,16 @@
 # Scan Tools
 
 ```zsh
+$ make clean
 $ make build
+```
+
+Я и сам не понял как эту херню тестировать.
+
+```zsh
+$ go test ./cmd/* -v
+$ go test ./... -v
+$ go test ./cmd/* ./... -v
 ```
 
 ## addscheme
@@ -20,5 +29,3 @@ https://facebook.com
 ```
 
 ![.github/workflows/main.yml](https://github.com/tz4678/scan-tools/workflows/.github/workflows/main.yml/badge.svg)
-
-# Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять

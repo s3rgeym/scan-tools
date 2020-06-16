@@ -1,0 +1,29 @@
+on:
+  release:
+    types: [published, created, edited]
+name: Build
+jobs:
+  build:
+    needs:
+      - test
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+        id: go
+      - name: Git Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: |
+          make clean
+          make build
+          cd ./build
+          zip -r release.zip .
+      - name: Upload to release
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: ./build/release.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
