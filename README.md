@@ -1,17 +1,23 @@
 # Scan Tools
 
+## Installation
+
 ```zsh
 $ make clean
 $ make build
+$ sudo make install
+$ sudo make uninstall
 ```
 
-Я и сам не понял как эту херню тестировать.
+## Tests
 
 ```zsh
 $ go test ./cmd/* -v
 $ go test ./... -v
 $ go test ./cmd/* ./... -v
 ```
+
+### Tools
 
 ## addscheme
 
