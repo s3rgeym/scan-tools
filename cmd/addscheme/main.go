@@ -89,10 +89,7 @@ func run(flags *cmdFlags) {
 	jobs := make(chan string, numberOfWorkers)
 	go func() {
 		for _, host := range hosts {
-			// skip empty lines
-			if host != "" {
-				jobs <- host
-			}
+			jobs <- host
 		}
 		close(jobs)
 	}()
