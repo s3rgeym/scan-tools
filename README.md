@@ -33,9 +33,11 @@ Add scheme to host:
 $ wget http://s3.amazonaws.com/alexa-static/top-1m.csv.zip
 $ unzip top-1m.csv.zip
 $ rm -rf top-1m.csv.zip
-$ cat ./top-1m.csv | head -n 100 | cut -f2 -d, | go run ./cmd/addscheme
+$ cat ./top-1m.csv | head -n 100 | cut -f2 -d, | addscheme
 https://google.com
 https://youtube.com
 https://facebook.com
 ...
+# Usage:
+$ addsheme -h
 ```
