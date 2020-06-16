@@ -1,6 +1,4 @@
-on:
-  release:
-    types: [published, created, edited]
+on: release
 name: Build
 jobs:
   build:
