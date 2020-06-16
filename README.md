@@ -1,5 +1,11 @@
 # Scan Tools
 
+![.github/workflows/release.yml](https://github.com/tz4678/scan-tools/workflows/.github/workflows/release.yml/badge.svg)
+
+## Download Binaries
+
+[Direct Link](https://github.com/tz4678/scan-tools/releases/latest/scan-tools.zip)
+
 ## Installation
 
 ```zsh
@@ -33,5 +39,3 @@ https://youtube.com
 https://facebook.com
 ...
 ```
-
-![.github/workflows/main.yml](https://github.com/tz4678/scan-tools/workflows/.github/workflows/main.yml/badge.svg)
