@@ -10,6 +10,8 @@ import (
 	"scan-tools/internal/utils"
 	"sync"
 	"time"
+
+	"go.uber.org/ratelimit"
 )
 
 var schemes = map[string]string{
@@ -18,19 +20,21 @@ var schemes = map[string]string{
 }
 
 type cmdFlags struct {
-	Input       string
-	Output      string
-	Concurrency int
-	Timeout     int
-	ShowHelp    bool
+	Input    string
+	Output   string
+	Rate     int
+	ShowHelp bool
+	Timeout  int
+	Workers  int
 }
 
 func setupFlags(flags *cmdFlags) {
+	flag.BoolVar(&flags.ShowHelp, "h", false, "Show help and exit")
 	flag.StringVar(&flags.Input, "i", "-", "Input filename")
 	flag.StringVar(&flags.Output, "o", "-", "Output filename")
-	flag.IntVar(&flags.Concurrency, "c", 10, "Concurrent requests")
+	flag.IntVar(&flags.Workers, "w", 10, "Number of workers")
 	flag.IntVar(&flags.Timeout, "t", 3, "Connect timeout in seconds")
-	flag.BoolVar(&flags.ShowHelp, "h", false, "Show help and exit")
+	flag.IntVar(&flags.Rate, "r", 50, "Requests per second")
 }
 
 func main() {
@@ -76,9 +80,12 @@ func run(flags *cmdFlags) {
 	if err != nil {
 		log.Panic(err)
 	}
+	hosts = utils.FilterString(hosts, func(s string) bool {
+		return s != ""
+	})
 	// fmt.Printf("%#v\n", hosts)
 	hostsLen := len(hosts)
-	numberOfWorkers := utils.Min(flags.Concurrency, hostsLen)
+	numberOfWorkers := utils.Min(flags.Workers, hostsLen)
 	jobs := make(chan string, numberOfWorkers)
 	go func() {
 		for _, host := range hosts {
@@ -93,8 +100,9 @@ func run(flags *cmdFlags) {
 	var wg sync.WaitGroup
 	wg.Add(hostsLen)
 	timeout := time.Duration(flags.Timeout) * time.Second
+	rl := ratelimit.New(flags.Rate)
 	for i := 0; i < numberOfWorkers; i++ {
-		go worker(jobs, results, timeout, &wg)
+		go worker(jobs, results, rl, timeout, &wg)
 	}
 	// из-за того что wg.Wait() не завернул в горутину работало неправильно
 	go func() {
@@ -109,11 +117,13 @@ func run(flags *cmdFlags) {
 func worker(
 	jobs <-chan string,
 	results chan<- string,
+	rl ratelimit.Limiter,
 	timeout time.Duration,
 	wg *sync.WaitGroup,
 ) {
 	for host := range jobs {
 		for scheme, port := range schemes {
+			rl.Take()
 			conn, _ := net.DialTimeout(
 				"tcp",
 				net.JoinHostPort(host, port),
