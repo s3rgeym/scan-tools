@@ -1,6 +1,6 @@
 # Scan Tools
 
-![.github/workflows/release.yml](https://github.com/tz4678/scan-tools/workflows/.github/workflows/release.yml/badge.svg)
+![Release workflow](https://github.com/tz4678/scan-tools/workflows/Release%20workflow/badge.svg)
 
 ## Download Binaries
 
