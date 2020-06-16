@@ -20,5 +20,3 @@ https://facebook.com
 ```
 
 ![.github/workflows/main.yml](https://github.com/tz4678/scan-tools/workflows/.github/workflows/main.yml/badge.svg)
-
-# Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять Блять
